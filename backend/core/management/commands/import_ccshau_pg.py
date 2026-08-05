@@ -7,27 +7,11 @@ from core.models import (
     EligibilityCriteria, AdmissionCycle,
 )
 
-EXCEL_PATH = Path(__file__).resolve().parents[4] / 'Data ' / 'Haryana_Universities_CCSHAU_PG_Course_Eligibility.xlsx'
+EXCEL_PATH = Path(__file__).resolve().parents[4] / 'Data ' / 'Updated HAU_PG_Course_Eligibility.xlsx'
 
-STREAM_MAP = {
-    'P301': 'agriculture', 'P302': 'agriculture', 'P303': 'agriculture',
-    'P304': 'agriculture', 'P305': 'agriculture', 'P306': 'agriculture',
-    'P307': 'agriculture', 'P308': 'agriculture', 'P309': 'agriculture',
-    'P310': 'agriculture', 'P311': 'agriculture', 'P312': 'agriculture',
-    'P313': 'agriculture', 'P314': 'agriculture',
-    'P315': 'management', 'P316': 'management', 'P317': 'management',
-    'P318': 'management', 'P319': 'management',
-    'P320': 'engineering', 'P321': 'engineering', 'P322': 'engineering',
-    'P323': 'engineering',
-    'P335': 'science', 'P336': 'agriculture', 'P337': 'science',
-    'P338': 'science', 'P339': 'science',
-    'P340': 'science', 'P341': 'agriculture', 'P342': 'science',
-    'P343': 'science', 'P344': 'science',
-    'P345': 'agriculture', 'P346': 'agriculture', 'P347': 'agriculture',
-    'P348': 'agriculture', 'P349': 'agriculture', 'P350': 'agriculture',
-    'P351': 'agriculture', 'P352': 'agriculture',
-    'P353': 'arts', 'P354': 'arts', 'P355': 'science',
-    'P356': 'sports', 'P357': 'agriculture',
+# Map streams from the Excel that aren't valid model choices
+STREAM_REMAP = {
+    'fisheries': 'agriculture',
 }
 
 STATUS_MAP = {
@@ -43,7 +27,7 @@ def make_short_name(name):
     short = name
     short = short.replace('Master in ', 'M')
     short = short.replace('PG Diploma in ', 'PGD ')
-    short = re.sub(r'\s*-\s*(Dept\.|IBMA|COB).*', '', short)
+    short = re.sub(r'\s*-\s*(Dept\.|IBMA|COB|Hisar|Gurugram).*', '', short)
     short = re.sub(r'\s*\(PGDC-\d+\)', '', short)
     short = re.sub(r'\s*\(.*?\)', '', short)
     short = short.strip()
@@ -62,7 +46,7 @@ def read_sheet(wb, name):
 
 
 class Command(BaseCommand):
-    help = 'Import CCSHAU PG courses from Haryana_Universities_CCSHAU_PG_Course_Eligibility.xlsx'
+    help = 'Import CCSHAU PG courses from Updated HAU_PG_Course_Eligibility.xlsx'
 
     def handle(self, *args, **options):
         if not EXCEL_PATH.exists():
@@ -112,7 +96,10 @@ class Command(BaseCommand):
             elig = elig_by_id.get(ccid, {})
             cycle = cycle_by_id.get(ccid, {})
 
-            stream = STREAM_MAP.get(cid, 'other')
+            # Use stream from the Courses sheet, remap if needed
+            raw_stream = cd.get('stream', 'other')
+            stream = STREAM_REMAP.get(raw_stream, raw_stream)
+
             short_name = make_short_name(cd['name'])
 
             course, c_new = Course.objects.get_or_create(
@@ -153,7 +140,8 @@ class Command(BaseCommand):
             else:
                 uc_created += 1
 
-            min_grad = elig.get('min_bachelor_percentage')
+            # Handle both old and new eligibility column names
+            min_grad = elig.get('min_qualifying_percentage') or elig.get('min_bachelor_percentage')
             if min_grad == 'NULL' or min_grad is None:
                 min_grad = None
 
@@ -163,14 +151,18 @@ class Command(BaseCommand):
 
             note = elig.get('note', '') or ''
 
+            # Handle =FALSE() Excel formula residue
+            dom_raw = str(elig.get('domicile_required', 'FALSE')).upper()
+            domicile = dom_raw == 'TRUE'
+
             EligibilityCriteria.objects.update_or_create(
                 university_course=uc,
                 defaults={
                     'min_graduation_percentage': min_grad,
-                    'required_graduation': elig.get('required_bachelor_degree', ''),
+                    'required_graduation': elig.get('required_bachelor_degree', '') or '',
                     'required_subjects': req_subj,
                     'entrance_exam': elig.get('entrance_exam', ''),
-                    'domicile_required': str(elig.get('domicile_required', 'FALSE')).upper() == 'TRUE',
+                    'domicile_required': domicile,
                 }
             )
 
@@ -180,13 +172,13 @@ class Command(BaseCommand):
             app_start = cycle.get('application_start')
             app_end = cycle.get('application_end')
             if app_start == 'NULL' or app_start is None:
-                app_start = '2025-07-01'
+                app_start = '2026-07-01'
             if app_end == 'NULL' or app_end is None:
-                app_end = '2025-08-31'
+                app_end = '2026-08-31'
 
             AdmissionCycle.objects.update_or_create(
                 university_course=uc,
-                academic_year=cycle.get('academic_year', '2025-26'),
+                academic_year=cycle.get('academic_year', '2026-27'),
                 defaults={
                     'application_start': app_start,
                     'application_end': app_end,
