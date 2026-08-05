@@ -533,7 +533,7 @@ const wizardStyles = `
   .step-dot {
     width: 42px; height: 42px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    background: white; color: var(--text-light);
+    background: var(--bg-card); color: var(--text-light);
     border: 2px solid var(--border);
     transition: all var(--transition);
   }
@@ -570,7 +570,7 @@ const wizardStyles = `
   .form-group input:focus, .form-group select:focus {
     outline: none; border-color: var(--primary-light);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    background: white;
+    background: var(--bg-card);
   }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
@@ -586,7 +586,7 @@ const wizardStyles = `
     font-size: 0.82rem;
     cursor: pointer;
     transition: all var(--transition);
-    background: white;
+    background: var(--bg-card);
   }
   .checkbox-chip:hover { border-color: var(--primary-light); }
   .checkbox-chip.checked {

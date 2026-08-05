@@ -229,7 +229,7 @@ export default function Home() {
         .hero-bg {
           position: absolute;
           inset: 0;
-          background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 40%, #e0e7ff 70%, #f0f4ff 100%);
+          background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 45%, var(--primary-50) 75%, var(--bg) 100%);
           z-index: 0;
         }
         .hero-bg::after {
@@ -240,7 +240,7 @@ export default function Home() {
           width: 600px;
           height: 600px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(var(--primary-glow, 59, 130, 246), 0.08) 0%, transparent 70%);
         }
         .hero-content {
           position: relative;
@@ -251,7 +251,7 @@ export default function Home() {
         .hero-badge {
           display: inline-block;
           padding: 0.35rem 1rem;
-          background: white;
+          background: var(--bg-card);
           border: 1px solid var(--primary-100);
           border-radius: 999px;
           font-size: 0.8rem;
@@ -295,7 +295,7 @@ export default function Home() {
         .stats-inner {
           max-width: 700px;
           margin: 0 auto;
-          background: white;
+          background: var(--bg-card);
           border-radius: var(--radius-xl);
           box-shadow: var(--shadow-lg);
           padding: 1.75rem 2rem;
@@ -334,7 +334,7 @@ export default function Home() {
           padding: 2rem 1.5rem;
           border-radius: var(--radius-xl);
           border: 1px solid var(--border);
-          background: white;
+          background: var(--bg-card);
           transition: all var(--transition-slow);
           animation: fadeInUp 0.5s ease both;
         }

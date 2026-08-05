@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ThemeControls from './ThemeControls'
 
 export default function Navbar() {
   const location = useLocation()
@@ -49,13 +50,14 @@ export default function Navbar() {
               <Link to="/signup" className="btn btn-primary btn-sm nav-signup" onClick={closeMobile}>Sign Up</Link>
             </>
           )}
+          <ThemeControls />
         </div>
 
         {mobileOpen && <div className="nav-overlay" onClick={closeMobile} />}
       </div>
       <style>{`
         .navbar {
-          background: rgba(255, 255, 255, 0.85);
+          background: var(--nav-bg);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           border-bottom: 1px solid var(--border);
@@ -115,7 +117,9 @@ export default function Navbar() {
           font-weight: 500;
           transition: all var(--transition);
         }
+        .nav-logout { background: var(--bg-card); }
         .nav-logout:hover { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+        html.dark .nav-logout:hover { background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.35); }
         .nav-signup {
           margin-left: 0.25rem;
           padding: 0.4rem 1rem !important;
@@ -155,7 +159,7 @@ export default function Navbar() {
             right: -100%;
             width: 280px;
             height: 100vh;
-            background: white;
+            background: var(--bg-card);
             flex-direction: column;
             align-items: stretch;
             padding: 5rem 1.5rem 2rem;

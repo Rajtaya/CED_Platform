@@ -209,14 +209,14 @@ export default function Results() {
         .search-input {
           width: 100%; padding: 0.65rem 1rem;
           border: 1.5px solid var(--border); border-radius: var(--radius);
-          font-size: 0.95rem; background: white;
+          font-size: 0.95rem; background: var(--bg-card);
           transition: all var(--transition);
         }
         .search-input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
         .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
         .filters select {
           padding: 0.45rem 0.65rem; border: 1.5px solid var(--border);
-          border-radius: var(--radius); font-size: 0.82rem; background: white;
+          border-radius: var(--radius); font-size: 0.82rem; background: var(--bg-card);
           transition: all var(--transition); cursor: pointer;
         }
         .filters select:focus { outline: none; border-color: var(--primary-light); }
@@ -234,7 +234,7 @@ export default function Results() {
           gap: 1.25rem;
         }
         .uni-card {
-          background: white;
+          background: var(--bg-card);
           border: 1.5px solid var(--border);
           border-radius: var(--radius-xl);
           padding: 1.5rem;
@@ -448,7 +448,7 @@ function UniversityProgrammes({ group, onBack, selectedProg, setSelectedProg }) 
         }
 
         .prog-card {
-          background: white;
+          background: var(--bg-card);
           border: 1.5px solid var(--border);
           border-radius: var(--radius-lg);
           padding: 1.1rem;
@@ -624,7 +624,7 @@ function DetailModal({ item, onClose }) {
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .detail-modal {
-          background: white; border-radius: var(--radius-xl);
+          background: var(--bg-card); border-radius: var(--radius-xl);
           max-width: 640px; width: 100%; max-height: 85vh;
           overflow-y: auto; padding: 2rem; position: relative;
           box-shadow: var(--shadow-xl);
@@ -635,7 +635,7 @@ function DetailModal({ item, onClose }) {
 
         @media (max-width: 600px) {
           .detail-overlay {
-            background: white;
+            background: var(--bg-card);
             padding: 0;
             display: block;
             overflow-y: auto;

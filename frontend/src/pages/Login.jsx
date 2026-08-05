@@ -117,7 +117,7 @@ export default function Login() {
           border-radius: var(--radius-xl);
           overflow: hidden;
           box-shadow: var(--shadow-xl);
-          background: white;
+          background: var(--bg-card);
           border: 1px solid var(--border);
           animation: fadeInUp 0.4s ease both;
         }
@@ -160,7 +160,7 @@ export default function Login() {
         .field input:focus {
           outline: none; border-color: var(--primary-light);
           box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-          background: white;
+          background: var(--bg-card);
         }
         .btn-full { width: 100%; margin-top: 0.5rem; padding: 0.7rem; }
         .auth-switch { text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted); }

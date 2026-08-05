@@ -4,22 +4,21 @@
   box-sizing: border-box;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   THEME SYSTEM  (ported from UEMS)
+   Two independent axes toggled on <html>:
+     • Color theme : .theme-blue (default) | .theme-warm
+     • Dark mode   : .dark
+   → four combinations: blue-light, blue-dark, warm-light, warm-dark
+   Applied before paint by /public/theme-init.js (CSP-safe, no inline JS).
+   Persistence: localStorage 'ui-theme' + 'dark-mode'.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Tokens shared across every theme/mode */
 :root {
-  --primary: #1e40af;
-  --primary-light: #3b82f6;
-  --primary-dark: #1e3a8a;
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
   --secondary: #059669;
   --secondary-light: #10b981;
   --accent: #f59e0b;
-  --bg: #f8fafc;
-  --bg-card: #ffffff;
-  --text: #1e293b;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -32,15 +31,102 @@
   --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.12);
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Font families — warm theme overrides --font-heading with a serif stack */
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* ─────────────── BLUE theme — light (DEFAULT) ─────────────── */
+:root,
+.theme-blue {
+  --primary: #1e40af;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e3a8a;
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #94a3b8;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --primary-glow: 59, 130, 246;
+}
+
+/* ─────────────── BLUE theme — dark ─────────────── */
+.theme-blue.dark {
+  --primary: #60a5fa;
+  --primary-light: #93c5fd;
+  --primary-dark: #3b82f6;
+  --primary-50: #172554;
+  --primary-100: #1e3a8a;
+  --bg: #0b1120;
+  --bg-card: #111827;
+  --nav-bg: rgba(17, 24, 39, 0.85);
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border: #24304a;
+  --border-light: #1c2740;
+}
+
+/* ─────────────── WARM Academic theme — light ─────────────── */
+.theme-warm {
+  --primary: #c75000;
+  --primary-light: #d86e1f;
+  --primary-dark: #8f3900;
+  --primary-50: #fbf0e8;
+  --primary-100: #f5d5bc;
+  --bg: #f5f0e8;
+  --bg-card: #fffdf9;
+  --nav-bg: rgba(255, 253, 249, 0.85);
+  --text: #1c1917;
+  --text-muted: #78716c;
+  --text-light: #a8a29e;
+  --border: #e7ddd0;
+  --border-light: #f0e9dd;
+  --primary-glow: 216, 110, 31;
+  --font-heading: Georgia, 'Times New Roman', 'Playfair Display', serif;
+}
+
+/* ─────────────── WARM Academic theme — dark ─────────────── */
+.theme-warm.dark {
+  --primary: #e8823a;
+  --primary-light: #f0a066;
+  --primary-dark: #d86e1f;
+  --primary-50: #3d2300;
+  --primary-100: #4d1f00;
+  --bg: #1c1917;
+  --bg-card: #292524;
+  --nav-bg: rgba(41, 37, 36, 0.85);
+  --text: #f5f0e8;
+  --text-muted: #a8a29e;
+  --text-light: #78716c;
+  --border: #44403c;
+  --border-light: #37322e;
+  --font-heading: Georgia, 'Times New Roman', 'Playfair Display', serif;
+}
+
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+/* Warm theme: serif headings (matches UEMS academic identity) */
+.theme-warm h1,
+.theme-warm h2,
+.theme-warm h3 {
+  font-family: var(--font-heading);
 }
 
 a {
@@ -87,7 +173,7 @@ button {
 }
 
 .btn-secondary {
-  background: white;
+  background: var(--bg-card);
   color: var(--text);
   border: 1.5px solid var(--border);
 }
@@ -145,10 +231,25 @@ button {
 .badge-private { background: #fce7f3; color: #9d174d; }
 .badge-unknown { background: #f1f5f9; color: #64748b; }
 
+/* Dark-mode badge variants — translucent tints keep the color coding legible */
+.dark .badge-open { background: rgba(34, 197, 94, 0.18); color: #4ade80; }
+.dark .badge-upcoming { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+.dark .badge-closed { background: rgba(239, 68, 68, 0.18); color: #f87171; }
+.dark .badge-govt,
+.dark .badge-state { background: rgba(59, 130, 246, 0.18); color: #60a5fa; }
+.dark .badge-central { background: rgba(139, 92, 246, 0.20); color: #a78bfa; }
+.dark .badge-private { background: rgba(236, 72, 153, 0.18); color: #f472b6; }
+.dark .badge-unknown { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; }
+
 input, select, textarea {
   font-family: inherit;
   font-size: 0.95rem;
+  color: var(--text);
+  background-color: var(--bg-card);
 }
+input::placeholder, textarea::placeholder { color: var(--text-light); }
+/* Native dropdown lists follow the theme in dark mode */
+.dark option { background-color: var(--bg-card); color: var(--text); }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -180,3 +281,34 @@ input, select, textarea {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Dark-mode overrides for elements that hardcode light colors in
+   their component <style> blocks (kept central for maintainability).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Blue "back" pills (Results / Browse) hardcode light-blue for reliability */
+.dark .uni-progs__back,
+.dark .b-back {
+  background: var(--primary-50);
+  border-color: var(--border);
+  color: var(--primary);
+}
+.dark .uni-progs__back:hover,
+.dark .b-back:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Light-red error alerts → translucent red that reads on a dark surface */
+.dark .form-error,
+.dark [class*="error"] {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #f87171 !important;
+}
+
+/* Small inset panels that hardcode #f8fafc */
+.dark .detail-row,
+.dark [style*="#f8fafc"] { background: var(--border-light) !important; }
